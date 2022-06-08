@@ -72,9 +72,7 @@ mod bar;
 pub use bar::Bar;
 
 pub mod error;
-use error::Error;
-
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = std::result::Result<T, error::InnerError>;
 
 mod yahoo;
 

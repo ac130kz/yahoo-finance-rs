@@ -5,8 +5,7 @@ use serde::Deserialize;
 use snafu::{ensure, OptionExt, ResultExt};
 use std::env;
 
-use crate::{ Interval, Result};
-use crate::error::{self};
+use crate::{error, Interval, Result};
 
 const BASE_URL: &str = "https://query1.finance.yahoo.com/v8/finance/chart/";
 
@@ -17,9 +16,7 @@ fn build_query(symbol: &str) -> Result<Url> {
         let default = BASE_URL.to_string();
         match this {
             Ok(t) => t,
-            // FIXME: ~const Drop doesn't quite work right yet
-            #[allow(unused_variables)]
-            Err(e) => default,
+            Err(_) => default,
         }
     };
     Url::parse(&base)
