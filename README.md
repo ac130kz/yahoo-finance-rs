@@ -79,6 +79,10 @@ yahoo-finance = "0.3"
 
 ### Development requirements
 
+Protocol Buffers `protoc` compiler.
+
+Ubuntu:
+
 ```bash
-cargo install protobuf-codegen
+sudo apt install protobuf-compiler -y
 ```
