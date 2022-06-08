@@ -1,12 +1,13 @@
 [package]
 name = "yahoo-finance"
-version = "0.3.0"
+version = "0.3.1"
 authors = [ "Fred Briden <fred.briden@gmail.com>" ]
 license = "MIT"
 description = "An API to get financial data from Yahoo."
 keywords = [ "yahoo", "finance", "stocks" ]
 readme = "README.md"
-edition = "2018"
+edition = "2021"
+build = "build.rs"
 
 include = [ "Cargo.toml", "LICENSE", "README.md", "src/**/*.rs" ]
 
@@ -16,23 +17,22 @@ homepage = "https://github.com/fbriden/yahoo-finance-rs"
 [dependencies]
 base64 = "0.13"
 chrono = { version = "0.4.19", features = [ "serde" ] }
-futures = "0.3.16"
-futures-util = { version = "0.3.16", default-features = false, features = [ "async-await", "sink", "std" ] }
+futures = "0.3.21"
+futures-util = { version = "0.3.21", default-features = false, features = [ "async-await", "sink", "std" ] }
 market-finance = "0.3"
-protobuf = "2.24.1"
-reqwest = { version = "0.11.4", features = [ "rustls-tls" ], default-features = false }
-serde = { version = "1.0.126", features = [ "derive" ] }
-serde_json = "1.0.65"
-snafu = "0.6.10"
-tokio = { version = "1.9.0", features = [ "macros", "rt-multi-thread" ],  default-features = false }
-tokio-stream = "0.1.7"
-tokio-tungstenite = { version = "0.15.0", features = [ "rustls-tls" ] }
+protobuf = "3.0.3"
+reqwest = { version = "0.11.10", features = [ "rustls-tls" ], default-features = false }
+serde = { version = "1.0.137", features = [ "derive" ] }
+serde_json = "1.0.81"
+snafu = "0.7.1"
+tokio = { version = "1.19.1", features = [ "macros", "rt-multi-thread" ],  default-features = false }
+tokio-stream = "0.1.9"
+tokio-tungstenite = { version = "0.17.1", features = [ "rustls" ] }
 url = "2.2.2"
 
-
 [dev-dependencies]
-mockito = "0.30.0"
+mockito = "0.31.0"
 tokio-test = "0.4.2"
 
 [build-dependencies]
-protobuf-codegen-pure = "2.24.1"
+protobuf-codegen = "3.0.3"

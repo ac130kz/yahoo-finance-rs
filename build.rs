@@ -1,14 +1,11 @@
-use protobuf_codegen_pure::{Codegen, Customize};
+use protobuf_codegen::Codegen;
 
 fn main() {
     // Build our realtime feed structure
     Codegen::new()
-        .out_dir("src/yahoo")
+        .out_dir("src/yahoo/generated")
         .inputs(&["src/yahoo/realtime.proto"])
         .includes(&["src"])
-        .customize(Customize {
-            ..Default::default()
-        })
         .run()
         .expect("Codegen failed.");
 }

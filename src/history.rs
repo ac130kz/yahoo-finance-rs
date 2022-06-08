@@ -19,20 +19,20 @@ fn aggregate_bars(data: yahoo::Data) -> Result<Vec<Bar>> {
     // otherwise see if one is empty and reflects bad data from Yahoo!
     ensure!(
         !timestamps.is_empty(),
-        error::MissingData {
-            reason: "no timestamps for OHLCV data"
+        error::MissingDataSnafu {
+            reason: "no timestamps for OHLCV data".to_string()
         }
     );
     ensure!(
         !quotes.is_empty(),
-        error::MissingData {
-            reason: "no OHLCV data"
+        error::MissingDataSnafu {
+            reason: "no OHLCV data".to_string()
         }
     );
     ensure!(
         !adjusted_closes.is_empty(),
-        error::MissingData {
-            reason: "no adjusted close data"
+        error::MissingDataSnafu {
+            reason: "no adjusted close data".to_string()
         }
     );
 
@@ -41,38 +41,38 @@ fn aggregate_bars(data: yahoo::Data) -> Result<Vec<Bar>> {
     let adjusted_close = &adjusted_closes[0];
     ensure!(
         timestamps.len() == quote.volumes.len(),
-        error::MissingData {
-            reason: "timestamps do not line up with OHLCV data"
+        error::MissingDataSnafu {
+            reason: "timestamps do not line up with OHLCV data".to_string()
         }
     );
     ensure!(
         timestamps.len() == quote.opens.len(),
-        error::MissingData {
-            reason: "'open' values do not line up the timestamps"
+        error::MissingDataSnafu {
+            reason: "'open' values do not line up the timestamps".to_string()
         }
     );
     ensure!(
         timestamps.len() == quote.highs.len(),
-        error::MissingData {
-            reason: "'high' values do not line up the timestamps"
+        error::MissingDataSnafu {
+            reason: "'high' values do not line up the timestamps".to_string()
         }
     );
     ensure!(
         timestamps.len() == quote.lows.len(),
-        error::MissingData {
-            reason: "'low' values do not line up the timestamps"
+        error::MissingDataSnafu {
+            reason: "'low' values do not line up the timestamps".to_string()
         }
     );
     ensure!(
         timestamps.len() == quote.closes.len(),
-        error::MissingData {
-            reason: "'close' values do not line up the timestamps"
+        error::MissingDataSnafu {
+            reason: "'close' values do not line up the timestamps".to_string()
         }
     );
     ensure!(
         timestamps.len() == adjusted_close.adjusted_closes.len(),
-        error::MissingData {
-            reason: "'adjusted close' values do not line up the timestamps"
+        error::MissingDataSnafu {
+            reason: "'adjusted close' values do not line up the timestamps".to_string()
         }
     );
 
@@ -91,22 +91,22 @@ fn aggregate_bars(data: yahoo::Data) -> Result<Vec<Bar>> {
         result.push(Bar {
             bar: MarketBar {
                 timestamp: timestamps[i] * 1000,
-                open: quote.opens[i].context(error::InternalLogic {
-                    reason: "missing open not caught",
+                open: quote.opens[i].context(error::InternalLogicSnafu {
+                    reason: "missing open not caught".to_string(),
                 })?,
-                high: quote.highs[i].context(error::InternalLogic {
-                    reason: "missing high not caught",
+                high: quote.highs[i].context(error::InternalLogicSnafu {
+                    reason: "missing high not caught".to_string(),
                 })?,
-                low: quote.lows[i].context(error::InternalLogic {
-                    reason: "missing low not caught",
+                low: quote.lows[i].context(error::InternalLogicSnafu {
+                    reason: "missing low not caught".to_string(),
                 })?,
-                close: quote.closes[i].context(error::InternalLogic {
-                    reason: "missing close not caught",
+                close: quote.closes[i].context(error::InternalLogicSnafu {
+                    reason: "missing close not caught".to_string(),
                 })?,
                 volume: quote.volumes[i],
             },
-            adjusted_close: adjusted_close.adjusted_closes[i].context(error::InternalLogic {
-                reason: "missing adjusted close not caught",
+            adjusted_close: adjusted_close.adjusted_closes[i].context(error::InternalLogicSnafu {
+                reason: "missing adjusted close not caught".to_string(),
             })?,
         })
     }
@@ -163,7 +163,7 @@ pub async fn retrieve(symbol: &str) -> Result<Vec<Bar>> {
 /// ```
 pub async fn retrieve_interval(symbol: &str, interval: Interval) -> Result<Vec<Bar>> {
     // pre-conditions
-    ensure!(!interval.is_intraday(), error::NoIntraday { interval });
+    ensure!(!interval.is_intraday(), error::NoIntradaySnafu { interval });
 
     aggregate_bars(yahoo::load_daily(symbol, interval).await?)
 }
@@ -199,7 +199,7 @@ pub async fn retrieve_range(
     let _end = end.unwrap_or_else(Utc::now);
     ensure!(
         _end.signed_duration_since(start).num_seconds() > 0,
-        error::InvalidStartDate
+        error::InvalidStartDateSnafu
     );
 
     aggregate_bars(yahoo::load_daily_range(symbol, start.timestamp(), _end.timestamp()).await?)

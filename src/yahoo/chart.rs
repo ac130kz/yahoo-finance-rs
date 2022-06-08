@@ -5,17 +5,27 @@ use serde::Deserialize;
 use snafu::{ensure, OptionExt, ResultExt};
 use std::env;
 
-use crate::{error, Interval, Result};
+use crate::{ Interval, Result};
+use crate::error::{self};
 
-const BASE_URL: &'static str = "https://query1.finance.yahoo.com/v8/finance/chart/";
+const BASE_URL: &str = "https://query1.finance.yahoo.com/v8/finance/chart/";
 
 /// Helper function to build up the main query URL
 fn build_query(symbol: &str) -> Result<Url> {
-    let base = env::var("TEST_URL").unwrap_or(BASE_URL.to_string());
-    Ok(Url::parse(&base)
-        .context(error::InternalURL { url: &base })?
+    let base = {
+        let this = env::var("TEST_URL");
+        let default = BASE_URL.to_string();
+        match this {
+            Ok(t) => t,
+            // FIXME: ~const Drop doesn't quite work right yet
+            #[allow(unused_variables)]
+            Err(e) => default,
+        }
+    };
+    Url::parse(&base)
+        .context(error::InternalURLSnafu { url: &base })?
         .join(symbol)
-        .context(error::InternalURL { url: symbol })?)
+        .context(error::InternalURLSnafu { url: symbol })
 }
 
 ez_serde!(Meta {
@@ -82,28 +92,28 @@ async fn load(url: &Url) -> Result<Data> {
     // ie - we won't 404 if the symbol doesn't exist
     let response = reqwest::get(url.clone())
         .await
-        .context(error::RequestFailed)?;
+        .context(error::RequestFailedSnafu)?;
     ensure!(
         response.status().is_success(),
-        error::CallFailed {
+        error::CallFailedSnafu {
             url: response.url().to_string(),
             status: response.status().as_u16()
         }
     );
 
-    let data = response.text().await.context(error::UnexpectedErrorRead {
-        url: url.to_string(),
+    let data = response.text().await.context(error::UnexpectedErrorReadSnafu {
+        url: url.to_string()
     })?;
     let chart = serde_json::from_str::<Response>(&data)
-        .context(error::BadData)?
+        .context(error::BadDataSnafu)?
         .chart;
 
-    if !chart.result.is_some() {
+    if chart.result.is_none() {
         // no result so we'd better have an error
-        let err = chart.error.context(error::InternalLogic {
+        let err = chart.error.context(error::InternalLogicSnafu {
             reason: "error block exists without values",
         })?;
-        error::ChartFailed {
+        error::ChartFailedSnafu {
             code: err.code,
             description: err.description,
         }
@@ -111,8 +121,8 @@ async fn load(url: &Url) -> Result<Data> {
     }
 
     // we have a result to process
-    let result = chart.result.context(error::UnexpectedErrorYahoo)?;
-    ensure!(result.len() > 0, error::UnexpectedErrorYahoo);
+    let result = chart.result.context(error::UnexpectedErrorYahooSnafu)?;
+    ensure!(!result.is_empty(), error::UnexpectedErrorYahooSnafu);
     Ok(result[0].clone())
 }
 

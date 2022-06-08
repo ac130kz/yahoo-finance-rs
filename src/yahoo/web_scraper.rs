@@ -6,9 +6,9 @@ use std::io::{BufRead, Cursor};
 
 use crate::{error, Result};
 
-const DATA_VAR: &'static str = "root.App.main";
+const DATA_VAR: &str = "root.App.main";
 
-const BASE_URL: &'static str = "https://finance.yahoo.com";
+const BASE_URL: &str = "https://finance.yahoo.com";
 
 ez_serde!(QuoteType {
     #[serde(rename = "longName")]
@@ -64,31 +64,29 @@ pub async fn scrape<'a>(symbol: &'a str) -> Result<Stores> {
         symbol
     );
 
-    let mut url = Url::parse(base.as_str()).context(error::InternalURL { url: base })?;
+    let mut url = Url::parse(base.as_str()).context(error::InternalURLSnafu { url: base })?;
     url.query_pairs_mut().append_pair("p", symbol);
 
     // make the call - we do not really expect this to fail.
     // ie - we won't 404 if the symbol doesn't exist
     let response = reqwest::get(url.clone())
         .await
-        .context(error::RequestFailed)?;
+        .context(error::RequestFailedSnafu)?;
     ensure!(
         response.status().is_success(),
-        error::CallFailed {
+        error::CallFailedSnafu {
             url: response.url().to_string(),
             status: response.status().as_u16()
         }
     );
 
-    let line = Cursor::new(response.text().await.context(error::UnexpectedErrorRead {
+    let line = Cursor::new(response.text().await.context(error::UnexpectedErrorReadSnafu {
         url: url.clone().to_string(),
     })?)
     .lines()
-    .map(|line| line.unwrap())
-    .filter(|line| line.trim().starts_with(DATA_VAR))
-    .next()
-    .context(error::MissingData {
-        reason: "no quote data",
+    .map(|line| line.unwrap()).find(|line| line.trim().starts_with(DATA_VAR))
+    .context(error::MissingDataSnafu {
+        reason: "no quote data".to_string(),
     })?;
 
     let data = line
@@ -97,6 +95,6 @@ pub async fn scrape<'a>(symbol: &'a str) -> Result<Stores> {
         .trim_start_matches(|c| c == ' ' || c == '=')
         .trim_end_matches(';');
 
-    let response = serde_json::from_str::<Response>(data).context(error::BadData)?;
+    let response = serde_json::from_str::<Response>(data).context(error::BadDataSnafu)?;
     Ok(response.context.dispatcher.stores)
 }

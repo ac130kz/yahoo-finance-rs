@@ -71,11 +71,8 @@ pub use market_finance::{Interval, Quote, Timestamped, TradingSession};
 mod bar;
 pub use bar::Bar;
 
-mod error;
-use snafu::Snafu;
-
-#[derive(Debug, Snafu)]
-pub struct Error(error::InnerError);
+pub mod error;
+use error::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
 

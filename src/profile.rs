@@ -2,7 +2,7 @@ use crate::{error, yahoo, Result};
 
 /// Symbols which represent a company can have an address associated with them.
 /// This is usually the company headquarters.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Address {
     pub street1: Option<String>,
     pub street2: Option<String>,
@@ -24,7 +24,7 @@ impl Address {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Company {
     /// Optional address on file for the symbol - typically the HQ for publicly
     /// traded companies.
@@ -61,7 +61,7 @@ impl Company {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Fund {
     pub name: String,
 
@@ -81,7 +81,7 @@ impl Fund {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Profile {
     Company(Company),
     Fund(Fund),
@@ -94,7 +94,7 @@ impl Profile {
         match kind.as_str() {
             "EQUITY" => Ok(Self::Company(Company::new(data)?)),
             "ETF" => Ok(Self::Fund(Fund::new(data)?)),
-            _ => (error::UnsupportedSecurity { kind })
+            _ => (error::UnsupportedSecuritySnafu { kind: kind.to_owned() })
                 .fail()
                 .map_err(core::convert::Into::into),
         }

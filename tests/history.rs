@@ -41,7 +41,7 @@ fn retrieve_valid() {
 
     // WHEN - we load the data
     let result = block_on(history::retrieve(symbol)).unwrap();
-    assert!(result.len() > 0)
+    assert!(!result.is_empty())
 }
 
 #[test]
@@ -139,7 +139,7 @@ fn retrieve_no_quote_data() {
 
     // WHEN - we get data where the there is basically no data
     let result = block_on(history::retrieve(symbol)).unwrap();
-    assert!(result.len() == 0)
+    assert!(result.is_empty())
 }
 
 #[test]

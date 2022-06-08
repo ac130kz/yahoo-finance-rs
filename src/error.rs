@@ -1,11 +1,10 @@
 use crate::Interval;
-use reqwest;
-use snafu::Snafu;
+use snafu::prelude::*;
 
 /// All possible errors that can occur when using yahoo finance
 #[derive(Debug, Snafu)]
-#[snafu(visibility = "pub(crate)")]
-pub enum InnerError {
+#[snafu(visibility(pub(crate)))]
+pub enum Error {
     #[snafu(display("Yahoo! returned invalid data - {}", source.to_string()))]
     BadData { source: serde_json::Error },
 
