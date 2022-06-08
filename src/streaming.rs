@@ -102,7 +102,7 @@ impl Streamer {
                 return future::ready(None);
             })
             .map(move |msg| {
-                let data: PricingData = ProtobufMessage::parse_from_bytes(&decode(msg).unwrap())
+                let data = PricingData::parse_from_bytes(&decode(msg).unwrap())
                     .unwrap();
 
                 Quote {

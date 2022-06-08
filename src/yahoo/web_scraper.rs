@@ -56,8 +56,10 @@ ez_serde!(Context {
 });
 ez_serde!(Response { context: Context });
 
-pub async fn scrape<'a>(symbol: &'a str) -> Result<Stores> {
+pub async fn scrape(symbol: &str) -> Result<Stores> {
     // construct the lookup URL - encoding it so we're safe
+
+    #[allow(clippy::or_fun_call)]
     let base = format!(
         "{}/quote/{}",
         env::var("TEST_URL").unwrap_or(BASE_URL.to_string()),

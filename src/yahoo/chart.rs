@@ -1,3 +1,5 @@
+#![allow(clippy::upper_case_acronyms)]
+
 use chrono::serde::ts_seconds;
 use chrono::{DateTime, Utc};
 use reqwest::Url;
