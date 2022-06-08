@@ -3,15 +3,17 @@ name: Publish
 on:
   push:
     tags:
-    - 'v*'
+      - "v*"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
-    - name: Publish
-      run: cargo publish --allow-dirty --token "${{ secrets.CARGO_KEY }}"
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: cargo install protobuf-codegen
+      - name: Build
+        run: cargo build --verbose
+      - name: Publish
+        run: cargo publish --allow-dirty --token "${{ secrets.CARGO_KEY }}"
