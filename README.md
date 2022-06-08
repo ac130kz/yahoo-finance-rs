@@ -13,7 +13,7 @@ A Rust library for getting financial information from [Yahoo!](https://finance.y
 [build-image]: https://github.com/fbriden/yahoo-finance-rs/workflows/Build/badge.svg
 [build]: https://github.com/fbriden/yahoo-finance-rs/actions
 
-* Historical OHLCV pricing information
+- Historical OHLCV pricing information
 
 ```rust
 use yahoo_finance::history;
@@ -29,7 +29,7 @@ fn main() {
 }
 ```
 
-* Realtime pricing information
+- Realtime pricing information
 
 ```rust
 use futures::{ future, StreamExt };
@@ -49,7 +49,7 @@ async fn main() {
 }
 ```
 
-* Symbol profile information
+- Symbol profile information
 
 ```rust
 use futures::{ future, StreamExt };
@@ -75,4 +75,10 @@ Add this to your `Cargo.toml`:
 
 ```toml
 yahoo-finance = "0.3"
+```
+
+### Development requirements
+
+```bash
+cargo install protobuf-codegen
 ```
