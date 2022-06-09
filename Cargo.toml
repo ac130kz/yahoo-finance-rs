@@ -15,24 +15,24 @@ repository = "https://github.com/fbriden/yahoo-finance-rs"
 homepage = "https://github.com/fbriden/yahoo-finance-rs"
 
 [dependencies]
-base64 = "0.13"
-chrono = { version = "0.4.19", features = [ "serde" ] }
-futures = "0.3.21"
-futures-util = { version = "0.3.21", default-features = false, features = [ "async-await", "sink", "std" ] }
-market-finance = "0.3"
-protobuf = "3.0.3"
-reqwest = { version = "0.11.10", features = [ "rustls-tls" ], default-features = false }
-serde = { version = "1.0.137", features = [ "derive" ] }
-serde_json = "1.0.81"
-snafu = "0.7.1"
-tokio = { version = "1.19.1", features = [ "macros", "rt-multi-thread" ],  default-features = false }
-tokio-stream = "0.1.9"
-tokio-tungstenite = { version = "0.17.1", features = [ "rustls" ] }
-url = "2.2.2"
+base64 = "^0.13"
+chrono = { version = "^0.4", features = [ "serde" ] }
+futures = "^0.3"
+futures-util = { version = "^0.3", default-features = false, features = [ "async-await", "sink", "std" ] }
+market-finance = { git = "https://github.com/ac130kz/market-finance-rs", rev = "a9d0ed6" }
+protobuf = "^3.0"
+reqwest = { version = "^0.11", features = [ "rustls-tls" ], default-features = false }
+serde = { version = "^1.0", features = [ "derive" ] }
+serde_json = "^1.0"
+snafu = "^0.7"
+tokio = { version = "^1.19", features = [ "macros", "rt-multi-thread" ],  default-features = false }
+tokio-stream = "^0.1"
+tokio-tungstenite = { version = "^0.17", features = [ "rustls" ] }
+url = "^2"
 
 [dev-dependencies]
-mockito = "0.31.0"
-tokio-test = "0.4.2"
+mockito = "^0.31"
+tokio-test = "^0.4"
 
 [build-dependencies]
-protobuf-codegen = "3.0.3"
+protobuf-codegen = "^3.0"

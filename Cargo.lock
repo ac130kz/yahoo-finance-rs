@@ -518,10 +518,11 @@ dependencies = [
 [[package]]
 name = "market-finance"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "692fc9433ad9589b939458dedd12c1ff5fe06eedb01b2160fd7095e972db2557"
+source = "git+https://github.com/ac130kz/market-finance-rs?rev=a9d0ed6#a9d0ed6256d98cc218b0a2d54aac9e1cbb330c1d"
 dependencies = [
  "chrono",
+ "serde",
+ "serde_derive",
 ]
 
 [[package]]
