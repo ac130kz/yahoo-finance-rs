@@ -2,6 +2,7 @@
     "recommendations": [
         "serayuzgur.crates",
         "rust-lang.rust-analyzer",
-        "bungcip.better-toml"
+        "bungcip.better-toml",
+        "zxh404.vscode-proto3"
     ]
 }
